@@ -102,6 +102,52 @@ paths:
                 failure:
                   value:
                     message: Failed to create task
+  /api/tasks/{id}:
+    delete:
+      summary: Delete a task
+      description: Removes a task by its identifier.
+      operationId: deleteTask
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Task identifier to delete.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "204":
+          description: Task deleted successfully with no response body.
+        "400":
+          description: The provided identifier was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalidId:
+                  value:
+                    message: Task id must be a positive integer.
+        "404":
+          description: A task with the provided identifier does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notFound:
+                  value:
+                    message: Task not found.
+        "500":
+          description: The server failed to delete the task.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                failure:
+                  value:
+                    message: Failed to delete task
 components:
   schemas:
     Task:

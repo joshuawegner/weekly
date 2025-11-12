@@ -53,3 +53,14 @@ export async function createTask(input: {
 
   return mapRowToTask(rows[0]);
 }
+
+export async function deleteTask(taskId: number): Promise<boolean> {
+  const result = await runQuery<{ id: number }>(
+    `DELETE FROM tasks
+     WHERE id = $1
+     RETURNING id`,
+    [taskId],
+  );
+
+  return (result.rowCount ?? 0) > 0;
+}
