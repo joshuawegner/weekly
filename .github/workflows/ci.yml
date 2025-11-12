@@ -5,16 +5,16 @@ on:
     branches:
       - main
     paths-ignore:
-      - .gitignore
-      - .vscode/**
-      - *.md
+      - '.gitignore'
+      - '.vscode/**'
+      - '**.md'
   pull_request:
     branches:
       - main
     paths-ignore:
-      - .gitignore
-      - .vscode/**
-      - *.md
+      - '.gitignore'
+      - '.vscode/**'
+      - '**.md'
 
 jobs:
   build:
