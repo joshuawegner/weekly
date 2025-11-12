@@ -1,17 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { deleteTask } from "@/lib/tasks";
 
-type RouteContext = {
-  params: {
-    id?: string;
-  };
-};
-
 export const revalidate = 0;
 
-export async function DELETE(_request: Request, { params }: RouteContext) {
-  const idParam = params.id;
+export async function DELETE(_request: NextRequest, context: { params: Promise<{ id?: string }> }) {
+  const { id: idParam } = await context.params;
 
   if (!idParam || !/^\d+$/.test(idParam)) {
     return NextResponse.json(
