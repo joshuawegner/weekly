@@ -1,0 +1,170 @@
+openapi: 3.1.0
+info:
+  title: Weekly Tasks API
+  description: |
+    OpenAPI specification for the Weekly student task tracker.
+    The service exposes RESTful endpoints for listing and creating tasks backed by the
+    PostgreSQL schema defined in `db/schema.sql`.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /api/tasks:
+    get:
+      summary: List tasks
+      description: Returns all tasks ordered by due date and identifier.
+      operationId: listTasks
+      responses:
+        "200":
+          description: A JSON array of tasks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+              examples:
+                sample:
+                  value:
+                    - id: 42
+                      curriculum: Algebra II
+                      task: Complete worksheet 5
+                      platform: Khan Academy
+                      dueDate: "2025-01-15"
+                    - id: 57
+                      curriculum: Physics
+                      task: Lab report draft
+                      platform: Google Classroom
+                      dueDate: "2025-01-20"
+        "500":
+          description: The server failed to retrieve tasks.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                failure:
+                  value:
+                    message: Failed to fetch tasks
+    post:
+      summary: Create a task
+      description: Creates a new task for the student curriculum with a normalized due date.
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskCreateInput"
+            examples:
+              sample:
+                value:
+                  curriculum: Algebra II
+                  task: Complete worksheet 6
+                  platform: Khan Academy
+                  dueDate: "2025-01-22"
+      responses:
+        "201":
+          description: The created task.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+              examples:
+                created:
+                  value:
+                    id: 58
+                    curriculum: Algebra II
+                    task: Complete worksheet 6
+                    platform: Khan Academy
+                    dueDate: "2025-01-22"
+        "400":
+          description: The submitted payload was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                missingField:
+                  value:
+                    message: "\"curriculum\" must be a non-empty string."
+                invalidDate:
+                  value:
+                    message: dueDate must be a valid ISO 8601 date string.
+        "500":
+          description: The server failed to create the task.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                failure:
+                  value:
+                    message: Failed to create task
+components:
+  schemas:
+    Task:
+      type: object
+      required:
+        - id
+        - curriculum
+        - task
+        - platform
+        - dueDate
+      properties:
+        id:
+          type: integer
+          description: Auto-incrementing task identifier.
+          example: 101
+        curriculum:
+          type: string
+          description: Curriculum or subject area the task belongs to.
+          example: Algebra II
+        task:
+          type: string
+          description: Description of the assigned work.
+          example: Complete worksheet 5
+        platform:
+          type: string
+          description: Platform or system where the work is submitted or tracked.
+          example: Khan Academy
+        dueDate:
+          type: string
+          format: date
+          description: Due date normalized to ISO 8601 date format (YYYY-MM-DD).
+          example: "2025-01-15"
+    TaskCreateInput:
+      type: object
+      required:
+        - curriculum
+        - task
+        - platform
+        - dueDate
+      properties:
+        curriculum:
+          type: string
+          description: Curriculum or subject area the task belongs to.
+          minLength: 1
+        task:
+          type: string
+          description: Description of the assigned work.
+          minLength: 1
+        platform:
+          type: string
+          description: Platform or system where the work is submitted or tracked.
+          minLength: 1
+        dueDate:
+          type: string
+          format: date
+          description: Due date in ISO 8601 format (YYYY-MM-DD).
+      additionalProperties: false
+    ErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Human-readable explanation of the error.
+      additionalProperties: false
