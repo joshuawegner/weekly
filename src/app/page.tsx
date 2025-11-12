@@ -27,11 +27,10 @@ export default async function Home() {
             Student Task Overview
           </span>
           <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Vibecoded Trashy Weekly Curriculum Planner
+            Vibecoded Weekly Curriculum Planner
           </h1>
           <p className="mx-auto max-w-2xl text-sm text-slate-300 sm:mx-0 sm:text-base">
-            Keep the cohort aligned with upcoming deliverables. Review the tasks below and remind
-            students to submit their work on time.
+            Review the tasks below and remember to submit your work on time.
           </p>
         </header>
 
