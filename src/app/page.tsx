@@ -1,46 +1,26 @@
-type Task = {
-  curriculum: string;
-  task: string;
-  platform: string;
-  dueDate: string;
-};
+import { getTasks } from "@/lib/tasks";
 
-const tasks: Task[] = [
-  {
-    curriculum: "Mathematics",
-    task: "Algebra mastery practice",
-    platform: "Khan Academy",
-    dueDate: "Nov 15, 2025",
-  },
-  {
-    curriculum: "Science",
-    task: "Lab report: Photosynthesis",
-    platform: "Google Classroom",
-    dueDate: "Nov 18, 2025",
-  },
-  {
-    curriculum: "Computer Science",
-    task: "Responsive portfolio build",
-    platform: "Replit",
-    dueDate: "Nov 20, 2025",
-  },
-  {
-    curriculum: "History",
-    task: "Primary source analysis",
-    platform: "Notion",
-    dueDate: "Nov 22, 2025",
-  },
-  {
-    curriculum: "Language Arts",
-    task: "Narrative draft revision",
-    platform: "Canvas",
-    dueDate: "Nov 25, 2025",
-  },
-];
+export const dynamic = "force-dynamic";
 
-export default function Home() {
+function formatDueDate(input: string): string {
+  const date = new Date(input);
+
+  if (Number.isNaN(date.getTime())) {
+    return input;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
+export default async function Home() {
+  const tasks = await getTasks();
+
   return (
-  <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+    <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
       <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-12 px-6 py-16 sm:px-10 lg:px-16">
         <header className="flex flex-col gap-3 text-center sm:text-left">
           <span className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
@@ -75,27 +55,32 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/70 text-slate-200">
-                {tasks.map((task, index) => (
-                  <tr
-                    key={`${task.curriculum}-${index}`}
-                    className="transition-colors hover:bg-slate-900/80"
-                  >
-                    <td className="px-6 py-5 text-sm font-semibold sm:text-base">
-                      {task.curriculum}
-                    </td>
-                    <td className="px-6 py-5 text-sm sm:text-base">
-                      {task.task}
-                    </td>
-                    <td className="px-6 py-5 text-sm sm:text-base">
-                      <span className="inline-flex items-center rounded-full border border-slate-700/60 bg-slate-800/60 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-200 sm:text-[0.75rem]">
-                        {task.platform}
-                      </span>
-                    </td>
-                    <td className="px-6 py-5 text-sm sm:text-base text-slate-100">
-                      {task.dueDate}
+                {tasks.length === 0 ? (
+                  <tr>
+                    <td className="px-6 py-5 text-sm text-slate-400 sm:text-base" colSpan={4}>
+                      No tasks yet. Add one with the API when you are ready.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  tasks.map((task) => (
+                    <tr key={task.id} className="transition-colors hover:bg-slate-900/80">
+                      <td className="px-6 py-5 text-sm font-semibold sm:text-base">
+                        {task.curriculum}
+                      </td>
+                      <td className="px-6 py-5 text-sm sm:text-base">
+                        {task.task}
+                      </td>
+                      <td className="px-6 py-5 text-sm sm:text-base">
+                        <span className="inline-flex items-center rounded-full border border-slate-700/60 bg-slate-800/60 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-200 sm:text-[0.75rem]">
+                          {task.platform}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5 text-sm sm:text-base text-slate-100">
+                        {formatDueDate(task.dueDate)}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
