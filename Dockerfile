@@ -19,7 +19,9 @@ RUN addgroup -g 1001 -S nodejs \
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/db ./db
+COPY --from=builder /app/scripts ./scripts
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "node scripts/apply-schema.mjs && node server.js"]
