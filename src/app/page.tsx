@@ -24,7 +24,7 @@ export default async function Home() {
       <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-12 px-6 py-16 sm:px-10 lg:px-16">
         <header className="flex flex-col gap-3 text-center sm:text-left">
           <span className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
-            Student Task Overview
+            Studentenfutter Task Overview
           </span>
           <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             Vibecoded Weekly Curriculum Planner
